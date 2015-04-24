@@ -1,0 +1,37 @@
+CC=g++
+FC=gfortran
+
+SUP_PATH1= ./src/
+
+
+INCLUDES= -I $(SUP_PATH1)
+CFLAGS=-c -Wall -DLINUX -ggdb -O0 $(INCLUDES)
+FCFLAGS=-c -DLINUX -ggdb -O0 -framework Accelerate $(INCLUDES) 
+
+LIB_SOURCES= $(SUP_PATH1)quantumPercolation.cpp
+
+LDFLAGS= -framework Accelerate -lgfortran
+
+SOURCES= $(LIB_SOURCES)
+SOURCES2 = $(SOURCES:.cpp=.o)
+OBJECTS= $(SOURCES2:.f=.o)
+EXECUTABLE=qmPerc_OSX
+
+#print_vars:
+#	echo $(SOURCES)
+#	echo $(SOURCES2)
+#	echo $(OBJECTS)
+
+all: $(SOURCES) $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@
+
+.f.o:
+	$(FC) $(FCFLAGS) $< -o $@
+
+clean:
+	rm -f $(OBJECTS) $(EXECUTABLE)
