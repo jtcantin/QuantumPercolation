@@ -9,6 +9,12 @@
 #ifndef ____quantumPercolation__
 #define ____quantumPercolation__
 
+#include <cstdlib>
 #include <iostream>
+#include <new>
+#include <lapacke.h>
+#include <iomanip>
+#include <ctime>
+
 
 #endif /* defined(____quantumPercolation__) */

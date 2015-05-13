@@ -1,16 +1,17 @@
 CC=g++
 FC=gfortran
+LAPACK_PATH= /Users/jtcantin/addLibs/lapack-3.5.0/
+LAPACKE_PATH= /Users/jtcantin/addLibs/lapack-3.5.0/lapacke/include/
 
 SUP_PATH1= ./src/
 
-
-INCLUDES= -I $(SUP_PATH1)
+INCLUDES= -I $(SUP_PATH1) -I $(LAPACKE_PATH)
 CFLAGS=-c -Wall -DLINUX -ggdb -O0 $(INCLUDES)
 FCFLAGS=-c -DLINUX -ggdb -O0 -framework Accelerate $(INCLUDES) 
 
-LIB_SOURCES= $(SUP_PATH1)quantumPercolation.cpp
+LIB_SOURCES= $(SUP_PATH1)quantumPercolation.cpp 
 
-LDFLAGS= -framework Accelerate -lgfortran
+LDFLAGS= -framework Accelerate -lgfortran $(LAPACK_PATH)liblapack.a $(LAPACK_PATH)liblapacke.a
 
 SOURCES= $(LIB_SOURCES)
 SOURCES2 = $(SOURCES:.cpp=.o)
