@@ -1,3 +1,4 @@
 qmPerc_OSX
 .DS_Store
 *.o
+*.dSYM
