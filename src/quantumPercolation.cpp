@@ -46,7 +46,8 @@ int main(int argc, char **argv) {
         Hami[i] = new double [N];
         for (j=0; j<N; j++) {
             Hami[i][j] = 0.0;
-            Hami2[N*i+j] = 0.0;
+//            Hami2[N*i+j] = 0.0; //Row major order
+            Hami2[i+N*j] = 0.0; //Column major order
         }
     }
     
@@ -79,16 +80,16 @@ int main(int argc, char **argv) {
     for (i=0; i<N; i++) {
         for (j=0; j<N; j++) {
             if (i==j) {
-                Hami2[N*i+j] = E;
+                Hami2[i+N*j] = E;
                 if (randTest == 1) {
-                    Hami2[N*i+j] = LO + static_cast <double> (rand()) /( static_cast <double> (RAND_MAX/(HI-LO)));
+                    Hami2[i+N*j] = LO + static_cast <double> (rand()) /( static_cast <double> (RAND_MAX/(HI-LO)));
                 }
             }
             else if (i-j == 1) {
-                Hami2[N*i+j] = t;
+                Hami2[i+N*j] = t;
             }
             else if (i-j == -1) {
-                Hami2[N*i+j] = t;
+                Hami2[i+N*j] = t;
             }
         }
     }
@@ -105,7 +106,7 @@ int main(int argc, char **argv) {
 //    
 //    for (i=0; i<N; i++) {
 //        for (j=0; j<N; j++) {
-//            cout << Hami2[N*i+j] ;
+//            cout << Hami2[i+N*j] ;
 //        }
 //        cout << endl;
 //    }
@@ -223,7 +224,7 @@ int main(int argc, char **argv) {
             N_l = N;
             
             //I compared the below to the results from dstevr, and they are identical
-            info = LAPACKE_dsyevr(LAPACK_ROW_MAJOR,'N','A','U',N_l,Hami2,lda,dummy_int,dummy_int,dummy_int,dummy_int,abstol, &numEval,evals,*dummy_matrix,ldz,&isuppz);
+            info = LAPACKE_dsyevr(LAPACK_COL_MAJOR,'N','A','U',N_l,Hami2,lda,dummy_int,dummy_int,dummy_int,dummy_int,abstol, &numEval,evals,*dummy_matrix,ldz,&isuppz);
             
             if (info == 0) {
                 cout << "LAPACKE_dsyevr completed successfully." << endl;
