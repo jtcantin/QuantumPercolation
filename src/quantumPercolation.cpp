@@ -222,7 +222,7 @@ int main(int argc, char **argv) {
             
             N_l = N;
             
-            //I compared the below to the results from Numpy, and they agree to less than a relative error of ??? for (N,E,t) = (10,1,2)
+            //I compared the below to the results from dstevr, and they are identical
             info = LAPACKE_dsyevr(LAPACK_ROW_MAJOR,'N','A','U',N_l,Hami2,lda,dummy_int,dummy_int,dummy_int,dummy_int,abstol, &numEval,evals,*dummy_matrix,ldz,&isuppz);
             
             if (info == 0) {
