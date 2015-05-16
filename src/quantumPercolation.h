@@ -15,6 +15,7 @@
 #include <lapacke.h>
 #include <iomanip>
 #include <ctime>
+#include <cmath>
 
 
 #endif /* defined(____quantumPercolation__) */

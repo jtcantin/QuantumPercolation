@@ -23,6 +23,10 @@ int main(int argc, char **argv) {
     int randTest;
     int solver;
     
+    int alpha = 3;
+    int longRange = 1;
+    
+    
     if (argc != 6) {
         cout << "Not enough arguments!" << endl;
         exit (EXIT_FAILURE);
@@ -77,23 +81,42 @@ int main(int argc, char **argv) {
         }
     }
     
-    for (i=0; i<N; i++) {
-        for (j=0; j<N; j++) {
-            if (i==j) {
-                Hami2[i+N*j] = E;
-                if (randTest == 1) {
-                    Hami2[i+N*j] = LO + static_cast <double> (rand()) /( static_cast <double> (RAND_MAX/(HI-LO)));
+    if (longRange == 0)
+    {
+    
+        for (i=0; i<N; i++) {
+            for (j=0; j<N; j++) {
+                if (i==j) {
+                    Hami2[i+N*j] = E;
+                    if (randTest == 1) {
+                        Hami2[i+N*j] = LO + static_cast <double> (rand()) /( static_cast <double> (RAND_MAX/(HI-LO)));
+                    }
                 }
-            }
-            else if (i-j == 1) {
-                Hami2[i+N*j] = t;
-            }
-            else if (i-j == -1) {
-                Hami2[i+N*j] = t;
+                else if (i-j == 1) {
+                    Hami2[i+N*j] = t;
+                }
+                else if (i-j == -1) {
+                    Hami2[i+N*j] = t;
+                }
             }
         }
     }
-    
+    else if (longRange==1)
+    {
+        for (i=0; i<N; i++) {
+            for (j=0; j<N; j++) {
+                if (i==j) {
+                    Hami2[i+N*j] = E;
+                    if (randTest == 1) {
+                        Hami2[i+N*j] = LO + static_cast <double> (rand()) /( static_cast <double> (RAND_MAX/(HI-LO)));
+                    }
+                }
+                else {
+                    Hami2[i+N*j] = t / pow( fabs(i - j), alpha);
+                }
+            }
+        }
+    }
     
     
     // print out Hamiltonian
@@ -104,9 +127,10 @@ int main(int argc, char **argv) {
 //        cout << endl;
 //    }
 //    
+//    cout << setprecision(3) << fixed;
 //    for (i=0; i<N; i++) {
 //        for (j=0; j<N; j++) {
-//            cout << Hami2[i+N*j] ;
+//            cout << Hami2[i+N*j] << " ";
 //        }
 //        cout << endl;
 //    }
