@@ -1,0 +1,38 @@
+CC=icpc
+FC=ifort
+LAPACK_PATH= /Users/jtcantin/addLibs/lapack-3.5.0/
+LAPACKE_PATH= /Users/jtcantin/addLibs/lapack-3.5.0/lapacke/include/
+
+SUP_PATH1= ./src/
+
+INCLUDES= -I $(SUP_PATH1) -I${MKLROOT}/include
+CFLAGS=-c $(INCLUDES)
+FCFLAGS=-c $(INCLUDES) 
+
+LIB_SOURCES= $(SUP_PATH1)quantumPercolation.cpp 
+
+LDFLAGS=  -Wl,--start-group ${MKLROOT}/lib/intel64/libmkl_intel_lp64.a ${MKLROOT}/lib/intel64/libmkl_core.a ${MKLROOT}/lib/intel64/libmkl_sequential.a -Wl,--end-group -lpthread -lm
+
+SOURCES= $(LIB_SOURCES)
+SOURCES2 = $(SOURCES:.cpp=.o)
+OBJECTS= $(SOURCES2:.f=.o)
+EXECUTABLE=qmPerc_LINUX
+
+#print_vars:
+#	echo $(SOURCES)
+#	echo $(SOURCES2)
+#	echo $(OBJECTS)
+
+all: $(SOURCES) $(EXECUTABLE)
+
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+
+.cpp.o:
+	$(CC) $(CFLAGS) $< -o $@
+
+.f.o:
+	$(FC) $(FCFLAGS) $< -o $@
+
+clean:
+	rm -f $(OBJECTS) $(EXECUTABLE)
