@@ -6,8 +6,8 @@ LAPACKE_PATH= /Users/jtcantin/addLibs/lapack-3.5.0/lapacke/include/
 SUP_PATH1= ./src/
 
 INCLUDES= -I $(SUP_PATH1) -I${MKLROOT}/include
-CFLAGS=-c $(INCLUDES)
-FCFLAGS=-c $(INCLUDES) 
+CFLAGS=-c -D LINUX_MKL $(INCLUDES)
+FCFLAGS=-c -D LINUX_MKL $(INCLUDES) 
 
 LIB_SOURCES= $(SUP_PATH1)quantumPercolation.cpp 
 
