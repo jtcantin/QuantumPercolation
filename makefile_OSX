@@ -6,8 +6,8 @@ LAPACKE_PATH= /Users/jtcantin/addLibs/lapack-3.5.0/lapacke/include/
 SUP_PATH1= ./src/
 
 INCLUDES= -I $(SUP_PATH1) -I $(LAPACKE_PATH)
-CFLAGS=-c -Wall -DLINUX -ggdb -O0 $(INCLUDES)
-FCFLAGS=-c -DLINUX -ggdb -O0 -framework Accelerate $(INCLUDES) 
+CFLAGS=-c -Wall -D OSX_LAPACKE -ggdb -O0 $(INCLUDES)
+FCFLAGS=-c -D OSX_LAPACKE -ggdb -O0 -framework Accelerate $(INCLUDES) 
 
 LIB_SOURCES= $(SUP_PATH1)quantumPercolation.cpp 
 

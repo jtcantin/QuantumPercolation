@@ -12,10 +12,18 @@
 #include <cstdlib>
 #include <iostream>
 #include <new>
-#include <lapacke.h>
+
 #include <iomanip>
 #include <ctime>
 #include <cmath>
+
+#ifdef LINUX_MKL
+#include "mkl.h"
+#endif
+
+#ifdef OSX_LAPACKE
+#include <lapacke.h>
+#endif
 
 
 #endif /* defined(____quantumPercolation__) */
