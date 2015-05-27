@@ -19,6 +19,8 @@
 
 #ifdef LINUX_MKL
 #include "mkl.h"
+//#include "mkl_lapack.h"
+#include "mkl_lapacke.h"
 #endif
 
 #ifdef OSX_LAPACKE

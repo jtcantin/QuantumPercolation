@@ -1,4 +1,6 @@
 qmPerc_OSX
+qmPerc_LINUX
 .DS_Store
 *.o
 *.dSYM
+/work/*

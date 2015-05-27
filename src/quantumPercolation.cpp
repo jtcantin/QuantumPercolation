@@ -156,10 +156,17 @@ int main(int argc, char **argv) {
         //    double reltol = 1E-7;
         //    double minMag = ?;
             double abstol;
-            
+           
+#ifdef OSX_LAPACKE 
             //Get the machine epsilon
             abstol = LAPACKE_dlamch('E');
-            
+#endif
+
+#ifdef LINUX_MKL
+	    //Arbitrary value
+	    abstol = 1.0E-10;
+#endif            
+
             double* diag;
             double* subDiag;
             
@@ -239,11 +246,16 @@ int main(int argc, char **argv) {
             //    double reltol = 1E-7;
             //    double minMag = ?;
             double abstol;
-            
+
+#ifdef OSX_LAPACKE 
             //Get the machine epsilon
             abstol = LAPACKE_dlamch('E');
-            
-            
+#endif
+
+#ifdef LINUX_MKL
+	    //Arbitrary value
+	    abstol = 1.0E-10;
+#endif            
             
             N_l = N;
             
