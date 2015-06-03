@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
     int solver;
     
     int alpha = 3;
-    int longRange = 1;
+    int longRange = 0;
     
     
     if (argc != 6) {
@@ -218,66 +218,82 @@ int main(int argc, char **argv) {
             
         case 1:
         {
+            int numEigvals;
+            double* eigvals;
+            eigvals = new double [N];
             
-            // print out Hamiltonian
-//            for (i=0; i<N; i++) {
-//                for (j=0; j<N; j++) {
-//                    cout << Hami[i][j] ;
-//                }
-//                cout << endl;
-//            }
+            dsyevrEigvalsInterface(Hami2, N, &numEigvals, eigvals);
             
             
-            //Prepare Lapack dsyevr call
-            lapack_int N_l;
-//            double dummy = 0.0;
-            lapack_int dummy_int = 1;
-            
-            //Output parameters
-            lapack_int numEval,isuppz;
-            double* evals = new double [N];
-            double** dummy_matrix = new double* [1];
-            dummy_matrix[0] = new double [1];
-            
-            lapack_int ldz = N;
-            lapack_int lda = N;
-            int info;
-            
-            //    double reltol = 1E-7;
-            //    double minMag = ?;
-            double abstol;
-
-#ifdef OSX_LAPACKE 
-            //Get the machine epsilon
-            abstol = LAPACKE_dlamch('E');
-#endif
-
-#ifdef LINUX_MKL
-	    //Arbitrary value
-	    abstol = 1.0E-10;
-#endif            
-            
-            N_l = N;
-            
-            //I compared the below to the results from dstevr, and they are identical
-            info = LAPACKE_dsyevr(LAPACK_COL_MAJOR,'N','A','U',N_l,Hami2,lda,dummy_int,dummy_int,dummy_int,dummy_int,abstol, &numEval,evals,*dummy_matrix,ldz,&isuppz);
-            
-            if (info == 0) {
-                cout << "LAPACKE_dsyevr completed successfully." << endl;
-            }
-            else {
-                cout << "!!!LAPACKE_dsyevr ERROR!!!" << endl;
-                cout << "dstevr info: " << info << endl;
-                exit (EXIT_FAILURE);
-            }
-            
-            cout << "NumEvals: " << numEval << endl;
+            cout << "NumEvals: " << numEigvals << endl;
             cout << "Eigenvalues: " << endl;
             cout << setprecision(presInt);
-            for (i=0; i<numEval; i++) {
-                cout << evals[i] << endl;
+            int i;
+            for (i=0; i<numEigvals; i++) {
+                cout << eigvals[i] << endl;
             }
-            delete [] evals;
+            
+            delete [] eigvals;
+            
+//            // print out Hamiltonian
+////            for (i=0; i<N; i++) {
+////                for (j=0; j<N; j++) {
+////                    cout << Hami[i][j] ;
+////                }
+////                cout << endl;
+////            }
+//            
+//            
+//            //Prepare Lapack dsyevr call
+//            lapack_int N_l;
+////            double dummy = 0.0;
+//            lapack_int dummy_int = 1;
+//            
+//            //Output parameters
+//            lapack_int numEval,isuppz;
+//            double* evals = new double [N];
+//            double** dummy_matrix = new double* [1];
+//            dummy_matrix[0] = new double [1];
+//            
+//            lapack_int ldz = N;
+//            lapack_int lda = N;
+//            int info;
+//            
+//            //    double reltol = 1E-7;
+//            //    double minMag = ?;
+//            double abstol;
+//
+//#ifdef OSX_LAPACKE 
+//            //Get the machine epsilon
+//            abstol = LAPACKE_dlamch('E');
+//#endif
+//
+//#ifdef LINUX_MKL
+//	    //Arbitrary value
+//	    abstol = 1.0E-10;
+//#endif            
+//            
+//            N_l = N;
+//            
+//            //I compared the below to the results from dstevr, and they are identical
+//            info = LAPACKE_dsyevr(LAPACK_COL_MAJOR,'N','A','U',N_l,Hami2,lda,dummy_int,dummy_int,dummy_int,dummy_int,abstol, &numEval,evals,*dummy_matrix,ldz,&isuppz);
+//            
+//            if (info == 0) {
+//                cout << "LAPACKE_dsyevr completed successfully." << endl;
+//            }
+//            else {
+//                cout << "!!!LAPACKE_dsyevr ERROR!!!" << endl;
+//                cout << "dstevr info: " << info << endl;
+//                exit (EXIT_FAILURE);
+//            }
+//            
+//            cout << "NumEvals: " << numEval << endl;
+//            cout << "Eigenvalues: " << endl;
+//            cout << setprecision(presInt);
+//            for (i=0; i<numEval; i++) {
+//                cout << evals[i] << endl;
+//            }
+//            delete [] evals;
         }
 
             

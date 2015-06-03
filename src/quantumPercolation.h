@@ -27,5 +27,6 @@
 #include <lapacke.h>
 #endif
 
+#include "lapackCustInterface.h"
 
 #endif /* defined(____quantumPercolation__) */
