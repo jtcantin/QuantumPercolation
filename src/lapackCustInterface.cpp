@@ -10,8 +10,6 @@
 
 using namespace std;
 
-int presInt = 10;
-
 //This function takes a Hamiltonian of size N by N and returns
 //  the number of eigenvalues in addition to placing the
 //  eigenvalues into eigvals, which must be an array of doubles
