@@ -4,3 +4,4 @@ qmPerc_LINUX
 *.o
 *.dSYM
 /work/*
+/randNumScripts/*

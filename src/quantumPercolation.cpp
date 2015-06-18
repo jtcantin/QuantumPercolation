@@ -14,7 +14,7 @@ using namespace std;
 int main(int argc, char **argv) {
     cout << "Hello World." << endl;
     
-    int presInt = 32;
+    int presInt = 16;
     
     //Make Hamiltonian
     int N;

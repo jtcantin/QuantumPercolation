@@ -4,6 +4,7 @@
 #
 # Created by Joshua Tyler Cantin on 2015-05-28.
 #
+#To run: python disDilLattice.py N occupationArrayFilename onsiteEnergyArrayFilename
 
 import numpy as np
 import sys
@@ -45,6 +46,7 @@ def convArrays(dim,lengths):
 #Parameters
 t = 1.
 alpha = 3
+longRange = False
 
 #Read in files
 N = int(sys.argv[1])
@@ -105,6 +107,8 @@ print "Number of Occupied Sites: %d" % nSitesOc
 
 coorToInd3DArray, indToCoorArray = convArrays(3,(N,N,N))
 
+print "Building Hamiltonian."
+
 #Build Hamiltonian
 hami2DArray = np.zeros((nSitesOc,nSitesOc))
 
@@ -112,6 +116,7 @@ for i in range(0, nSitesOc):
     for j in range(0, nSitesOc):
         if i == j:
             hami2DArray[i,j] = onsiteEnergyArray[i]
+        
         else:
             #Get site coordinates
             iVec = np.array(indToCoorArray[occupationArray[i]])
@@ -120,10 +125,24 @@ for i in range(0, nSitesOc):
             #Get distance between sites
             diffVec = iVec - jVec
             dist = np.linalg.norm(diffVec)
-            
-            #Assign element
-            hami2DArray[i,j] = t/(dist**alpha)
+#            if i==13:
+#                print i
+#                print j
+#                print iVec
+#                print jVec
+#                print dist
 
+            if longRange:
+                #Assign element
+                hami2DArray[i,j] = t/(dist**alpha)
+            
+            else: #Then Tight Binding model
+                if (dist < 1.001): #True if nearest neighbour
+                    hami2DArray[i,j] = t
+#                    print "triggered"
+
+print "Hamiltonian built."
+print "Diagonalizing..."
 #np.savetxt("test.csv",hami2DArray,delimiter=",")
 #print hami2DArray
 #print np.max(np.abs(hami2DArray.T - hami2DArray))
@@ -138,11 +157,16 @@ eval_srtd = np.sort(eval)
 #sort the eigenvectors, so that they are in order of increasing energy
 #evec_srtd = np.copy(evec[:,eval.argsort()])
 
-print " "
-print "Eigenvalues:"
-for eval_item in eval_srtd:
-    print eval_item
+print "Eigenvalues calculated and sorted."
 
+#print " "
+#print "Eigenvalues:"
+#for eval_item in eval_srtd:
+#    print eval_item
+
+eigvalFilename = occupationArrayFilename[:-4]+"_eigvals.txt"
+np.savetxt(eigvalFilename,eval_srtd,delimiter=',')
+print "Eigenvalues saved to :", eigvalFilename
 
 
 
