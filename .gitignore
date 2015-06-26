@@ -5,3 +5,4 @@ qmPerc_LINUX
 *.dSYM
 /work/*
 /randNumScripts/*
+execution/testFiles
