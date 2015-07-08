@@ -5,3 +5,6 @@ qmPerc_LINUX
 *.dSYM
 /work/*
 /randNumScripts/*
+rndDatafiles/*
+srcTRX/data/*
+srcTRX/runDir/*

@@ -8,11 +8,11 @@ import datetime
 dir='rndDatafiles/' #<-- directory to store random files, needs to be a string
 
 
-size=30 # <-- size of the lattice per dimension, integer
-ptg_vac=0 #<-- percentage of vacancy, prefer integer, otherwise might need to modify 'out_file' in functions
-num_dis=3 #<-- number of disorders generated, integer
-wmin=-20. #<-- infimum of on-site energy
-wmax=20. #<-- supremum of on-site energy
+size=10 # <-- size of the lattice per dimension, integer
+ptg_vac=01 #<-- percentage of vacancy, prefer integer, otherwise might need to modify 'out_file' in functions
+num_dis=1 #<-- number of disorders generated, integer
+wmin=-0.1 #<-- infimum of on-site energy
+wmax=0.1 #<-- supremum of on-site energy
 
 dirAdd = ("n%03dq%02dw%03d" % (size,ptg_vac,wmax*2))
 #print dirAdd
