@@ -1,3 +1,5 @@
+# To run: python eLevelStats.py [eigvalFilename] [nu] [nBins] [sigma]
+
 import sys
 import numpy as np
 import matplotlib.pyplot as plt

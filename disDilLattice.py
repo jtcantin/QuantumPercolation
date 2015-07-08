@@ -46,7 +46,7 @@ def convArrays(dim,lengths):
 #Parameters
 t = 1.
 alpha = 3
-longRange = False
+longRange = True
 
 #Read in files
 N = int(sys.argv[1])

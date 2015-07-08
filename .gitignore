@@ -8,3 +8,4 @@ qmPerc_LINUX
 rndDatafiles/*
 srcTRX/data/*
 srcTRX/runDir/*
+execution/testFiles
