@@ -2,7 +2,7 @@
 
 import sys
 import numpy as np
-from scipy import integrate
+from scipy import integrate, optimize
 import matplotlib.pyplot as plt
 import time
 
@@ -15,7 +15,7 @@ nu = int(sys.argv[2])
 nBins = int(sys.argv[3])
 sigma = float(sys.argv[4])
 sigma2 = float(sys.argv[5])
-sigma3 = float(sys.argv[6])
+#sigma3 = float(sys.argv[6])
 
 plotCheck = True
 
@@ -93,29 +93,34 @@ staircaseArray = staircase(EValues, eigvals)
 #Try an alternative method: NOT WORKING
 #   Use the Gaussian Broadening Method
 #########################
-def gauss(x,mu,sigma):
+def gauss(x,mu,sigma,denom):
     exponent = -1. * ((x - mu)**2) / (2.*(sigma**2))
     return denom * np.exp(exponent)
 
 #raw_input("Paused before gaussian broadening.")
-denom = (1./(sigma*np.sqrt(2.*np.pi)))
+#denom = (1./(sigma*np.sqrt(2.*np.pi)))
 
 def gaussSum2(x,eigvals,sigma):
     rhoGauss = np.zeros(len(x))
+    denom = (1./(sigma*np.sqrt(2.*np.pi)))
+    
     for x1 in eigvals: #Sum over the different gaussians, each with a mean equal to the eigenvalue
-        rhoGauss = rhoGauss + gauss(x,x1,sigma)
+        rhoGauss = rhoGauss + gauss(x,x1,sigma,denom)
 
     return rhoGauss
 
 def gaussSum(x,eigvals,sigma):
     rhoGauss = 0.
+    denom = (1./(sigma*np.sqrt(2.*np.pi)))
+    
     for x1 in eigvals: #Sum over the different gaussians, each with a mean equal to the eigenvalue
-        rhoGauss = rhoGauss + gauss(x,x1,sigma)
+        rhoGauss = rhoGauss + gauss(x,x1,sigma,denom)
     
     return rhoGauss
 #Evals = np.arange(np.min(eigvals)-1, np.max(eigvals)+1,0.0001)
 #print Evals.size
 Evals = eigvals
+
 rhoGauss = gaussSum2(Evals,eigvals,sigma)
 
 meanSpacing = np.mean(spacings)
@@ -167,6 +172,19 @@ NoFE_array = integrate.cumtrapz(rhoGauss,Evals,initial=1.)
 
 print "Integration Complete."
 
+def MSD_NofE(sigma, Evals, eigvals, testArray, arrayReturn=False):
+    rhoGauss = gaussSum2(Evals,eigvals,sigma)
+    NoFE_array = integrate.cumtrapz(rhoGauss,Evals,initial=1.)
+
+    Dev = NoFE_array - testArray
+    SqrDev = Dev**2
+    meanSqrDev = np.mean(SqrDev)
+
+    if arrayReturn:
+        return meanSqrDev, NoFE_array, rhoGauss
+
+    else:
+        return meanSqrDev
 
 #GB: Use the secant method to obtain the least mean squares from the staircase function
 ###############
@@ -176,73 +194,121 @@ ti = time.time()
 Evals = eigvals
 staircaseArrayTest = staircase(Evals, eigvals)
 
+#Minimize MSD
+print "Beginning minimization..."
+ti = time.time()
+
+MSDoptions = {"maxiter": 3, "disp": True}
+MinTol = 1E-10 #Relative tolerance
+print "Chosen Relative Tolerance: ", MinTol
+
+MSDresult = optimize.minimize_scalar(MSD_NofE, bracket=[sigma, sigma2], args=(Evals, eigvals, staircaseArrayTest), tol=MinTol)#, options=MSDoptions)
+
+print "Optimization Complete. Time: ", time.time() - ti, " s"
+ti = time.time()
+print "MSDresult:"
+print MSDresult
+print " "
 #Original sigma
 Dev = NoFE_array - staircaseArrayTest
 SqrDev = Dev**2
 meanSqrDev = np.mean(SqrDev)
 
-#Second Sigma
-rhoGauss2 = gaussSum2(Evals,eigvals,sigma2)
-NoFE_array2 = integrate.cumtrapz(rhoGauss2,Evals,initial=1.)
+print "Original Sigma: ", sigma
+print "Original MSD: ", meanSqrDev
+print "Determined Sigma: ", MSDresult.x
+#print "Optimizer Exited Successfully: ", MSDresult.success
+#print "Obtained MSD: ", MSDresult.fun
+#print "Number of iterations: ", MSDresult.nit
 
-Dev = NoFE_array2 - staircaseArrayTest
-SqrDev = Dev**2
-meanSqrDev2 = np.mean(SqrDev)
+#
+#
+##Second Sigma
+#meanSqrDev2, NoFE_array2 = MSD_NofE(sigma2, Evals, eigvals, staircaseArrayTest)
+##rhoGauss2 = gaussSum2(Evals,eigvals,sigma2)
+##NoFE_array2 = integrate.cumtrapz(rhoGauss2,Evals,initial=1.)
+##
+##Dev = NoFE_array2 - staircaseArrayTest
+##SqrDev = Dev**2
+##meanSqrDev2 = np.mean(SqrDev)
+#
+#
+##Third Sigma
+#meanSqrDev3, NoFE_array2 = MSD_NofE(sigma3, Evals, eigvals, staircaseArrayTest)
+##rhoGauss3 = gaussSum2(Evals,eigvals,sigma3)
+##NoFE_array3 = integrate.cumtrapz(rhoGauss3,Evals,initial=1.)
+##
+##Dev = NoFE_array3 - staircaseArrayTest
+##SqrDev = Dev**2
+##meanSqrDev3 = np.mean(SqrDev)
+#
+#
+##Calculate Derivatives
+#Der1 = (meanSqrDev2 - meanSqrDev) / (sigma2 - sigma)
+#Der2 = (meanSqrDev3 - meanSqrDev2) / (sigma3 - sigma2)
+#
+#print "Time for prep: ", time.time() - ti, "s"
+#ti = time.time()
+#print "Sigma 1: ", sigma, " MSD: ", meanSqrDev
+#print "Sigma 2: ", sigma2, " MSD: ", meanSqrDev2, "Derivative: ", Der1
+#print "Sigma 3: ", sigma3, " MSD: ", meanSqrDev3, "Derivative: ", Der2
+#
+#figNum = 0
+#
+##Use the secant method until relative error achieved
+#relError = 0.01
+##while np.abs((meanSqrDev2 - meanSqrDev)/meanSqrDev) > relError:
+#while np.abs((sigma3 - sigma2)/sigma2) > relError:
+#    
+#    #Get new sigma
+#    sigmaNew = sigma3 - Der2 * (sigma3 - sigma2) / (Der2 - Der1)
+#
+#    Der1 = Der2
+#
+#    meanSqrDev2 = meanSqrDev3
+#
+#    #Calculate with new sigma
+#    meanSqrDev3, NoFE_array2 = MSD_NofE(sigmaNew, Evals, eigvals, staircaseArrayTest)
+##    rhoGauss2 = gaussSum2(Evals,eigvals,sigmaNew)
+##    NoFE_array2 = integrate.cumtrapz(rhoGauss2,Evals,initial=1.)
+##
+##    #Get new mean squared deviation
+##    Dev = NoFE_array2 - staircaseArrayTest
+##    SqrDev = Dev**2
+##    meanSqrDev3 = np.mean(SqrDev)
+#
+#    Der2 = (meanSqrDev3 - meanSqrDev2) / (sigmaNew - sigma3)
+#
+#    #Update sigmas
+#    sigma2 = sigma3
+#    sigma3 = sigmaNew
+#
+#    print "New Sigma: ", sigmaNew, " New MSD: ", meanSqrDev3, "Derivative: ", Der2, " Iteration Time: ", time.time() - ti, "s"
+#    
+#    if plotCheck:
+#        figNum += 1
+#        fig = plt.figure(figNum)
+#        ax = plt.subplot()
+#        line, = ax.plot(Evals, NoFE_array2, color='blue', label="meanN(E)")
+#        line2, = ax.plot(EValues, staircaseArray, color='red', label="N(E)")#, label="Gaussian Broadening Method")
+#        ax.legend()
+#
+#        #plt.ylim(0,1.5)
+#        #plt.xlim(0,N)
+#        plt.xlabel("Energy", fontsize=16)
+#        plt.ylabel(r'$N(E)$', fontsize=16)
+#        plt.title("Integrated Gaussian Broadening Level Density", fontsize=18)
+#        
+#        plt.show()
+##        raw_input("Check out plot.")
+#
+#    
+#
+#    ti = time.time()
+#
+#NoFE_array = NoFE_array2
 
-print "Time for prep: ", time.time() - ti, "s"
-ti = time.time()
-print "Sigma 1: ", sigma, " MSD: ", meanSqrDev
-print "Sigma 2: ", sigma2, " MSD: ", meanSqrDev2
-
-figNum = 0
-
-#Use the secant method until relative error achieved
-relError = 0.01
-#while np.abs((meanSqrDev2 - meanSqrDev)/meanSqrDev) > relError:
-while np.abs((sigma2 - sigma)/sigma) > relError:
-    
-    #Get new sigma
-    sigmaNew = sigma2 - meanSqrDev2 * (sigma2 - sigma) / (meanSqrDev2 - meanSqrDev)
-
-    meanSqrDev = meanSqrDev2
-
-    #Calculate with new sigma
-    rhoGauss2 = gaussSum2(Evals,eigvals,sigmaNew)
-    NoFE_array2 = integrate.cumtrapz(rhoGauss2,Evals,initial=1.)
-
-    #Get new mean squared deviation
-    Dev = NoFE_array2 - staircaseArrayTest
-    SqrDev = Dev**2
-    meanSqrDev2 = np.mean(SqrDev)
-
-    #Update sigmas
-    sigma = sigma2
-    sigma2 = sigmaNew
-
-    print "New Value: ", sigmaNew, " New MSD: ", meanSqrDev2, " Iteration Time: ", time.time() - ti, "s"
-    
-    if plotCheck:
-        figNum += 1
-        fig = plt.figure(figNum)
-        ax = plt.subplot()
-        line, = ax.plot(Evals, NoFE_array, color='blue', label="meanN(E)")
-        line2, = ax.plot(EValues, staircaseArray, color='red', label="N(E)")#, label="Gaussian Broadening Method")
-        ax.legend()
-
-        #plt.ylim(0,1.5)
-        #plt.xlim(0,N)
-        plt.xlabel("Energy", fontsize=16)
-        plt.ylabel(r'$\rho$', fontsize=16)
-        plt.title("Gaussian Broadening Level Density", fontsize=18)
-        
-        plt.show()
-#        raw_input("Check out plot.")
-
-    
-
-    ti = time.time()
-
-
+meanSqrDevFinal, NoFE_array, rhoGauss2 = MSD_NofE(MSDresult.x, Evals, eigvals, staircaseArrayTest, arrayReturn=True)
 
 #Gaussian Broadening: Bin the unfolded data
 #########################
@@ -292,7 +358,7 @@ print " "
 #Plot
 #########################
 #########################
-#figNum = 0
+figNum = 0
 
 figNum += 1
 fig = plt.figure(figNum)
@@ -337,8 +403,9 @@ figNum += 1
 fig = plt.figure(figNum)
 ax = plt.subplot()
 #line, = ax.plot(Evals[1:], NoFE_array, color='blue', label="N(E)")
-line2, = ax.plot(Evals, rhoGauss, color='red', label=r'$\rho(E)$')#, label="Gaussian Broadening Method")
-#ax.legend()
+line2, = ax.plot(Evals, rhoGauss, color='red', label="Original Sigma")
+line2, = ax.plot(Evals, rhoGauss2, color='blue', label="Final Sigma")
+ax.legend()
 
 #plt.ylim(0,1.5)
 #plt.xlim(0,N)
@@ -356,8 +423,8 @@ ax.legend()
 #plt.ylim(0,1.5)
 #plt.xlim(0,N)
 plt.xlabel("Energy", fontsize=16)
-plt.ylabel(r'$\rho$', fontsize=16)
-plt.title("Gaussian Broadening Level Density", fontsize=18)
+plt.ylabel(r'$N(E)$', fontsize=16)
+plt.title("Integrated Gaussian Broadening Level Density", fontsize=18)
 
 figNum += 1
 fig = plt.figure(figNum)
