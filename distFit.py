@@ -30,63 +30,65 @@ def brodyDist(S,q):
 #########################
 #########################
 
-numPoints = int(sys.argv[1])
-b = float(sys.argv[2])
-bNum = float(sys.argv[3])
+if __name__ == "__main__":
 
-S = np.linspace(0, 10, numPoints)
+    numPoints = int(sys.argv[1])
+    b = float(sys.argv[2])
+    bNum = float(sys.argv[3])
 
-bArray = np.linspace(0,1,bNum)
+    S = np.linspace(0, 10, numPoints)
 
-brodyArray = brodyDist(S,b)
+    bArray = np.linspace(0,1,bNum)
 
-brodyBList = []
+    brodyArray = brodyDist(S,b)
 
-for i in range(0, bArray.size):
-    brodyBList.append(brodyDist(S,bArray[i]))
+    brodyBList = []
 
-#########################
-#########################
-#Plot
-#########################
-#########################
-figNum = 0
+    for i in range(0, bArray.size):
+        brodyBList.append(brodyDist(S,bArray[i]))
 
-figNum += 1
-fig = plt.figure(figNum)
-ax = plt.subplot()
-for i in range(0, bArray.size):
-    labelString = "b = %f" % bArray[i]
-    line, = ax.plot(S, brodyBList[i], label=labelString)
+    #########################
+    #########################
+    #Plot
+    #########################
+    #########################
+    figNum = 0
+
+    figNum += 1
+    fig = plt.figure(figNum)
+    ax = plt.subplot()
+    for i in range(0, bArray.size):
+        labelString = "b = %f" % bArray[i]
+        line, = ax.plot(S, brodyBList[i], label=labelString)
 
 
-#line, = ax.plot(S, brodyArray)#, label="Local Level Density")
-#line2, = ax.plot(eigvals, rhoGauss, color='red', marker="o", label="Gaussian Broadening Method")
-ax.legend()
+    #line, = ax.plot(S, brodyArray)#, label="Local Level Density")
+    #line2, = ax.plot(eigvals, rhoGauss, color='red', marker="o", label="Gaussian Broadening Method")
+    ax.legend()
 
-plt.ylim(0,1.0)
-#plt.xlim(0,N)
-plt.xlabel(r'$S$', fontsize=16)
-plt.ylabel(r'$P(S)$', fontsize=16)
-plt.title("Brody Distribution", fontsize=18)
+    plt.ylim(0,1.0)
+    #plt.xlim(0,N)
+    plt.xlabel(r'$S$', fontsize=16)
+    plt.ylabel(r'$P(S)$', fontsize=16)
+    plt.title("Brody Distribution", fontsize=18)
 
-#########################################
-figNum += 1
-fig = plt.figure(figNum)
-ax = plt.subplot()
-#for i in range(0, bArray.size):
-#    labelString = "b = %f" % bArray[i]
-#    line, = ax.plot(S, brodyBList[i], label=labelString)
+    #########################################
+    figNum += 1
+    fig = plt.figure(figNum)
+    ax = plt.subplot()
+    #for i in range(0, bArray.size):
+    #    labelString = "b = %f" % bArray[i]
+    #    line, = ax.plot(S, brodyBList[i], label=labelString)
 
-labelString = "b = %f" % b
-line, = ax.plot(S, brodyArray, label=labelString)
-#line2, = ax.plot(eigvals, rhoGauss, color='red', marker="o", label="Gaussian Broadening Method")
-ax.legend()
+    labelString = "b = %f" % b
+    line, = ax.plot(S, brodyArray, label=labelString)
+    #line2, = ax.plot(eigvals, rhoGauss, color='red', marker="o", label="Gaussian Broadening Method")
+    ax.legend()
 
-plt.ylim(0,1.0)
-#plt.xlim(0,N)
-plt.xlabel(r'$S$', fontsize=16)
-plt.ylabel(r'$P(S)$', fontsize=16)
-plt.title("Brody Distribution", fontsize=18)
+    plt.ylim(0,1.0)
+    #plt.xlim(0,N)
+    plt.xlabel(r'$S$', fontsize=16)
+    plt.ylabel(r'$P(S)$', fontsize=16)
+    plt.title("Brody Distribution", fontsize=18)
 
-plt.show()
+    plt.show()

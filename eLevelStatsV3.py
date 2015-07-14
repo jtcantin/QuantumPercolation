@@ -5,6 +5,7 @@ import numpy as np
 from scipy import integrate, optimize
 import matplotlib.pyplot as plt
 import time
+import distFit
 
 np.set_printoptions(threshold=10000,linewidth=2000,precision=20,suppress=False)
 
@@ -16,6 +17,7 @@ nBins = int(sys.argv[3])
 sigma = float(sys.argv[4])
 sigma2 = float(sys.argv[5])
 #sigma3 = float(sys.argv[6])
+#bVal = float(sys.argv[6])
 
 plotCheck = True
 
@@ -356,6 +358,48 @@ print "Gaussian Broadened staricase binned."
 #Calculate Level density from 2nd order derivative
 #O2rho = 1. / np.gradient(eigvals
 
+#Gaussian Broadening: Fit to Brody Distribution
+#########################
+
+#Set up the points to sit at the centre of each bin
+Svals = bin_edgesGBNE[:-1] + (bin_edgesGBNE[1]-bin_edgesGBNE[0])/2.
+
+#brodyDistArray = distFit.brodyDist(Svals, bVal)
+
+def MSD_BrodyDist(bVal, Svals, dataToFitArray, arrayReturn=False):
+    brodyDistArray = distFit.brodyDist(Svals, bVal)
+
+    devArray = dataToFitArray - brodyDistArray
+    sqrDevArray = np.power(devArray, 2)
+    meanSqrDev = np.mean(sqrDevArray)
+
+    if arrayReturn:
+        return meanSqrDev, brodyDistArray
+    
+    else:
+        return meanSqrDev
+
+#Fit Brody Dist by minimizing MSD
+print "Beginning Brody Distribution Fit..."
+ti = time.time()
+
+MSDoptions = {"maxiter": 3, "disp": True}
+MinTol = 1E-10 #Relative tolerance
+print "Chosen Relative Tolerance: ", MinTol
+
+fitResult = optimize.minimize_scalar(MSD_BrodyDist, bracket=[0., 1.], args=(Svals, binnedDataGBNE), tol=MinTol)#, options=MSDoptions)
+
+print "Fit Complete. Time: ", time.time() - ti, " s"
+ti = time.time()
+
+bVal = fitResult.x
+
+print "Fit Result:"
+print fitResult
+print "Determined b value: ", bVal
+
+MSD_fit, brodyDistArray = MSD_BrodyDist(bVal, Svals, binnedDataGBNE, arrayReturn=True)
+print "MSD of the Fit: ", MSD_fit
 
 print " "
 
@@ -435,8 +479,13 @@ plt.title("Integrated Gaussian Broadening Level Density", fontsize=18)
 figNum += 1
 fig = plt.figure(figNum)
 ax = plt.subplot()
-bar = ax.bar(bin_edgesGB[:-1], binnedDataGB,width=bin_edgesGB[1]-bin_edgesGB[0],color='g',edgecolor='g',label="rho unfolded")
-bar2 = ax.bar(bin_edgesGBNE[:-1], binnedDataGBNE,width=bin_edgesGBNE[1]-bin_edgesGBNE[0],color='k',edgecolor='k',label="N(E_k)")
+#bar = ax.bar(bin_edgesGB[:-1], binnedDataGB,width=bin_edgesGB[1]-bin_edgesGB[0],color='g',edgecolor='g',label="rho unfolded")
+#bar2 = ax.bar(bin_edgesGBNE[:-1], binnedDataGBNE,width=bin_edgesGBNE[1]-bin_edgesGBNE[0],color='k',edgecolor='k',label="N(E_k)")
+line2, = ax.plot(bin_edgesGBNE[:-1], binnedDataGBNE, 'ok', markersize=4, label="N(E_k)", markerfacecolor='w')
+
+
+brodyLabel = "Brody Dist, b = %f" % bVal
+line, = ax.plot(Svals, brodyDistArray, '.r', label=brodyLabel, markersize=2)
 #bar = ax.bar(bin_edges[1:-1], binnedData[1:],width=bin_edges[1]-bin_edges[0])
 ax.legend()
 

@@ -9,3 +9,5 @@ rndDatafiles/*
 srcTRX/data/*
 srcTRX/runDir/*
 execution/testFiles
+*.pyc
+._*
