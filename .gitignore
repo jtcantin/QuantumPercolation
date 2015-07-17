@@ -7,7 +7,10 @@ qmPerc_LINUX
 /randNumScripts/*
 rndDatafiles/*
 srcTRX/data/*
-srcTRX/runDir/*
+srcTRX/runDir/run1
+srcTRX/runDir/run2
+srcTRX/runDir/run3
+srcTRX/runDir/run4
 execution/testFiles
 *.pyc
 ._*

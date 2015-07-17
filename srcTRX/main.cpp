@@ -135,8 +135,8 @@ int main(int argc, const char * argv[])
     myfile2.open((outfile+"_Eval.txt").c_str());
     myfile2 << setprecision(presInt);
     for (int i=0; i<numEigvals; i++) {
-        cout << eigvals[i] << endl;
-	myfile2<< eigvals[i] <<endl;
+//        cout << eigvals[i] << endl;
+        myfile2<< eigvals[i] <<endl;
     } 
     myfile2.close();    
     delete [] eigvals;

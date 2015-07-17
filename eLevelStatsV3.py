@@ -1,4 +1,4 @@
-# To run: python eLevelStatsV2.py [eigvalFilename] [nu] [nBins] [sigma] [sigma2]
+# To run: python eLevelStatsV2.py [eigvalFilename] [nu] [nBins] [sigma] [sigma2] [N] [q] [w]
 
 import sys
 import numpy as np
@@ -18,6 +18,10 @@ sigma = float(sys.argv[4])
 sigma2 = float(sys.argv[5])
 #sigma3 = float(sys.argv[6])
 #bVal = float(sys.argv[6])
+NVal = int(sys.argv[6])
+qVal = float(sys.argv[7])
+wVal = float(sys.argv[8])
+rangeString = sys.argv[9]
 
 plotCheck = True
 
@@ -401,6 +405,8 @@ print "Determined b value: ", bVal
 MSD_fit, brodyDistArray = MSD_BrodyDist(bVal, Svals, binnedDataGBNE, arrayReturn=True)
 print "MSD of the Fit: ", MSD_fit
 
+RMSD_fit = np.sqrt(MSD_fit)
+
 print " "
 
 #########################
@@ -489,11 +495,13 @@ line, = ax.plot(Svals, brodyDistArray, '.r', label=brodyLabel, markersize=2)
 #bar = ax.bar(bin_edges[1:-1], binnedData[1:],width=bin_edges[1]-bin_edges[0])
 ax.legend()
 
+titleString = "GB Energy Level Statistics for N=%02d,q=%.2f,w=%.2f %s; RMSD=%.2f" % (NVal, qVal, wVal, rangeString, RMSD_fit)
+
 #plt.ylim(0,2)
 #plt.xlim(0,20)
 plt.xlabel(r'$s$', fontsize=16)
 plt.ylabel(r'$P(s)$', fontsize=16)
-plt.title("GB rho Energy Level Statistics", fontsize=18)
+plt.title(titleString, fontsize=18)
 
 
 

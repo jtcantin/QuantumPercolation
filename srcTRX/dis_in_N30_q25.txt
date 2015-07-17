@@ -1,0 +1,12 @@
+!Size -- has to be an integer, the actual size of the system is size^3
+30
+!Range -- xNN/ 'Long'
+Long
+!Gamma -- tunnelling amplitude ~d^(-Gamma), double
+3
+!Z-hop -- 0: t_Z=t; 1: t_Z=2t
+0
+!Percent of Vacancy -- percentage, i.e. x%
+25
+!end of the input file
+
