@@ -7,10 +7,13 @@ qmPerc_LINUX
 /randNumScripts/*
 rndDatafiles/*
 srcTRX/data/*
+srcTRX/dataAnalysis/*
+srcTRX/pythonVerification/*
 srcTRX/runDir/run1
 srcTRX/runDir/run2
 srcTRX/runDir/run3
 srcTRX/runDir/run4
+srcTRX/runDir/run5
 execution/testFiles
 *.pyc
 ._*

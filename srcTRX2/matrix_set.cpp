@@ -316,13 +316,8 @@ void Hamiltonian::Hami(int lattice_sz, string occfile, string onsite, double hop
     C.loadVectortxt(occfile,occ);
     const int nocc=int(occ.size());
     occ_num=nocc;
-    
-    long long occVal = (long long) nocc;
-    
-    long long numElements = occVal*occVal;
 
-    H = new double[numElements];
-//    H = new double[nocc*nocc];
+    H = new double[nocc*nocc];
     for (int i=0; i<nocc; i++)
     {
         for (int j=0; j<nocc; j++)
