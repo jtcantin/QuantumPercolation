@@ -3,6 +3,8 @@ qmPerc_LINUX
 .DS_Store
 *.o
 *.dSYM
+*.eps
+*.csv
 /work/*
 /randNumScripts/*
 rndDatafiles/*
@@ -14,6 +16,14 @@ srcTRX/runDir/run2
 srcTRX/runDir/run3
 srcTRX/runDir/run4
 srcTRX/runDir/run5
+srcTRXeigstates/runDir/run1
+srcTRXeigstates/runDir/run2
+srcTRXeigstates/runDir/run3
+srcTRXeigstates/runDir/run4
+srcTRXeigstates/runDir/run5
+srcTRXeigstates/*.txt
+srcTRXeigstates/testDir/*
+graphData
 execution/testFiles
 *.pyc
 ._*

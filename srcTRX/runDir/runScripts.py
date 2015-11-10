@@ -8,16 +8,17 @@ import rand_dis_fcn as rdf
 runNum = 5
 numThreads = 8
 
-alphaList = [3]
-qList = [90]
-wList = [20]
-Nlist = [103]
-numDisorders = 1
+alphaList = [np.inf]
+qList = [90, 75, 50, 25,0]
+wList = [1]
+Nlist = [30]
+numDisorders = 3
 
 #q=25,40 transtion line: wList = [0,2,4,5,6,7,8,8.5,9,9.5,10,10.5,11,12,13,15,20]
 #q=0 transition line (tentative): [1,5,8,10,12,13,14,15,15.5,16,16.5,17,18,19,20,22,24,28]
 #w=4 transition line: [90, 80, 70, 60, 55, 50, 45, 40, 35, 30, 20, 10, 0]
 #Initial phase diagram spread: N=30, qList = [90, 75, 50, 25,0], wList = [0, 5, 10, 15, 20], numDisorders = 3
+#Second phase diagram spread: N=30, qList = [95, 82, 62, 37, 12], wList = [0, 2.5, 7.5, 12.5, 17.5], numDisorders = 3
 
 def dis_in_make(N,rng,q,filename):
     

@@ -140,6 +140,7 @@ plt.ylim(0,1.)
 plt.xlabel("System Side Length, N", fontsize=16)
 plt.ylabel("Brody Parameter, b", fontsize=16)
 #plt.title("Local Level Density", fontsize=18)
+fig.canvas.set_window_title('Convergence')
 
 #######
 #Distributions
@@ -173,6 +174,7 @@ for distNum in range(0, distArrayArray_qN_srtd.size):
     plt.xlabel("Energy Level Spacing, S", fontsize=16)
     plt.ylabel("P(S)", fontsize=16)
 #    plt.title("DistNum: {0}, bVal: {1:4f}".format(distNum,data2DArray_qN_srtd[3][distNum]), fontsize=18)
+    fig.canvas.set_window_title("DistNum: {0}, bVal: {1:4f}, N:{2},q:{3},w:{4}".format(distNum,data2DArray_qN_srtd[3][distNum],data2DArray_qN_srtd[3][distNum],data2DArray_qN_srtd[3][distNum],data2DArray_qN_srtd[3][distNum])
 
 plt.show()
 

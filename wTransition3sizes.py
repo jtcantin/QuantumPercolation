@@ -99,7 +99,7 @@ figNum += 1
 fig = plt.figure(figNum,facecolor="white")
 ax = plt.subplot()
 
-colourList = ["black","blue","black","red"]
+colourList = ["black","blue","green","red"]
 markerList = ["D","s",".","D"]
 markerSizeList = [5,5,15,5]
 typeIndex = 0
